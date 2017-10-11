@@ -61,15 +61,8 @@ namespace whitespace
                 options.ExcludeExtensions = ConversionOptions.DefaultExcludeExtensions;
             }
 
-            if (Recurse.HasValue())
-            {
-                // it's the presence we're interested in, it shouldn't have a value
-                options.Recurse = true;
-            }
-            else
-            {
-                options.Recurse = ConversionOptions.DefaultRecurse;
-            }
+            // the presence of recurse means it's on, there is no value
+            options.Recurse = Recurse.HasValue();
 
             return options;
         }

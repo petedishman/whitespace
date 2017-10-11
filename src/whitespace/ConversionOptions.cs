@@ -7,7 +7,6 @@ namespace whitespace
     {
         public static readonly List<string> DefaultPaths = new List<string>() {"."};
         public static readonly int DefaultTabWidth = 4;
-        public static readonly bool DefaultRecurse = false;
         public static readonly List<string> DefaultIncludeExtensions = new List<string>() {"*"};
         public static readonly List<string> DefaultExcludeExtensions = new List<string>();
         public static readonly List<string> DefaultExcludeFolders = new List<string>();

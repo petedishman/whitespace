@@ -10,12 +10,15 @@ namespace whitespace
         {
             var options = new ProgramArguments() {
                 Path = command.Argument("path", "path description", true),
-                TabWidth = command.Option("-t|--tabwidth", "tab width", CommandOptionType.SingleValue),
-                Recurse = command.Option("-r|--recurse", "recurse or not", CommandOptionType.NoValue),
-                IncludeExtensions = command.Option("-i|--include", "extensions to include", CommandOptionType.MultipleValue),
-                ExcludeExtensions = command.Option("-e|--exclude", "extensions to exclude", CommandOptionType.MultipleValue),
-                ExcludeFolders = command.Option("-x|--eXclude-folders", "exclude folders", CommandOptionType.MultipleValue),
-                StripTrailingSpaces = command.Option("-s|--strip-trailing-spaces", "", CommandOptionType.SingleValue)
+                TabWidth = command.Option("-t|--tabwidth", $"number of spaces per tab (default={ConversionOptions.DefaultTabWidth})", CommandOptionType.SingleValue),
+                Recurse = command.Option("-r|--recurse", "recurse through child folders (default=false)", CommandOptionType.NoValue),
+                IncludeExtensions = command.Option("-i|--include", "file extensions to include (default=<all>)", CommandOptionType.MultipleValue),
+                ExcludeExtensions = command.Option("-e|--exclude", "extensions to exclude (default=<none>)", CommandOptionType.MultipleValue),
+                ExcludeFolders = command.Option("-x|--eXclude-folders", "exclude folders (default=<none>)", CommandOptionType.MultipleValue),
+                StripTrailingSpaces = command.Option("-s|--strip-trailing-spaces", "strip trailing whitespace from end of lines (default=false)", CommandOptionType.SingleValue)
+
+                // add verbose option to list each file changed or inspected?
+                // should add option to fix line-endings (i.e. LF or CRLF)
             };
             command.HelpOption("-h|--help");
 
@@ -45,7 +48,7 @@ namespace whitespace
             folders to exclude
             */
 
-            app.Command("tabify", (command) => {
+            app.Command("tabs", (command) => {
 
                 var options = AddConversionOptions(command);
 
@@ -61,7 +64,7 @@ namespace whitespace
             });
 
 
-            app.Command("spacify", (command) => {
+            app.Command("spaces", (command) => {
 
                 var options = AddConversionOptions(command);
 
