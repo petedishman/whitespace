@@ -11,6 +11,7 @@ namespace whitespace
         public static readonly List<string> DefaultExcludeExtensions = new List<string>();
         public static readonly List<string> DefaultExcludeFolders = new List<string>();
         public static readonly bool DefaultStripTrailingSpaces = true;
+        public static readonly LineEnding DefaultLineEndingStyle = LineEnding.None;
 
         public ConversionType Type {get; set;}
         public List<string> Paths {get; set;}
@@ -20,5 +21,6 @@ namespace whitespace
         public List<string> ExcludeExtensions {get; set;}
         public List<string> ExcludeFolders {get; set;}
         public bool StripTrailingSpaces {get; set;}
+        public LineEnding LineEndingStyle { get; set; }
     }
 }

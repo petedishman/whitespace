@@ -12,6 +12,7 @@ namespace whitespace
         public CommandOption ExcludeExtensions { get; set; }
         public CommandOption ExcludeFolders { get; set; }
         public CommandOption StripTrailingSpaces { get; set; }
+        public CommandOption LineEndings { get; set; }
 
         public ConversionOptions GetConfiguration(ConversionType type)
         {
@@ -63,6 +64,27 @@ namespace whitespace
 
             // the presence of recurse means it's on, there is no value
             options.Recurse = Recurse.HasValue();
+
+            if (LineEndings.HasValue())
+            {
+                var lineEndingStyle = LineEndings.Value().ToLower();
+                if (lineEndingStyle == "crlf")
+                {
+                    options.LineEndingStyle = LineEnding.CRLF;
+                }
+                else if (lineEndingStyle == "lf")
+                {
+                    options.LineEndingStyle = LineEnding.LF;
+                }
+                else
+                {
+                    throw new Exception("Line Endings must be crlf or lf");
+                }
+            }
+            else
+            {
+                options.LineEndingStyle = ConversionOptions.DefaultLineEndingStyle;
+            }
 
             return options;
         }
