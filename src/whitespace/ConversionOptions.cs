@@ -21,5 +21,6 @@ namespace whitespace
         public List<string> ExcludeFolders { get; set; } = DefaultExcludeFolders;
         public bool StripTrailingSpaces { get; set; } = DefaultStripTrailingSpaces;
         public LineEnding LineEndingStyle { get; set; } = DefaultLineEndingStyle;
+        public bool DryRun { get; set; } = false;
     }
 }

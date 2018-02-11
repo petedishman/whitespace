@@ -33,6 +33,12 @@ namespace whitespace
 
             await Task.WhenAll(GetFiles().Select((file) => {
                 Console.WriteLine(" {0}", file);
+
+                if (configuration.DryRun)
+                {
+                    return Task.CompletedTask;
+                }
+
                 return ConvertFileAsync(file);
             }));
         }

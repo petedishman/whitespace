@@ -20,6 +20,7 @@ namespace whitespace
         public CommandOption ExcludeFolders { get; set; }
         public CommandOption StripTrailingSpaces { get; set; }
         public CommandOption LineEndings { get; set; }
+        public CommandOption DryRun { get; set; }
 
         protected List<string> ParseFileExtensionsOption(List<string> values)
         {
@@ -67,8 +68,10 @@ namespace whitespace
                 options.ExcludeExtensions = ParseFileExtensionsOption(ExcludeExtensions.Values);
             }
 
-            // the presence of recurse means it's on, there is no value
+            // the presence of recurse|dryrun means it's on, there is no value
             options.Recurse = Recurse.HasValue();
+            options.DryRun = DryRun.HasValue();
+
             if (LineEndings.HasValue())
             {
                 var lineEndingStyle = LineEndings.Value().ToLower();

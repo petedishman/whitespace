@@ -19,7 +19,8 @@ namespace whitespace
                 ExcludeExtensions = command.Option("-e|--exclude", "extensions to exclude (default=<none>)", CommandOptionType.MultipleValue),
                 ExcludeFolders = command.Option("-x|--eXclude-folders", "exclude folders (default=<none>)", CommandOptionType.MultipleValue),
                 StripTrailingSpaces = command.Option("-s|--strip-trailing-spaces", "strip trailing whitespace from end of lines (default=false)", CommandOptionType.SingleValue),
-                LineEndings = command.Option("-l|--line-endings", "convert line endings to crlf|lf (default=leave alone)", CommandOptionType.SingleValue)
+                LineEndings = command.Option("-l|--line-endings", "convert line endings to crlf|lf (default=leave alone)", CommandOptionType.SingleValue),
+                DryRun = command.Option("-d|--dry-run", "just show files that would be changed", CommandOptionType.NoValue)
                 // add verbose option to list each file changed or inspected?
             };
             command.HelpOption("-h|--help");
