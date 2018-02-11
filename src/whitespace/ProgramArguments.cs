@@ -1,8 +1,15 @@
 using System;
+using System.Collections.Generic;
 using McMaster.Extensions.CommandLineUtils;
 
 namespace whitespace
 {
+    public class ConfigurationException : Exception
+    {
+        public ConfigurationException(string message)
+            : base(message) { }
+    }
+
     public class ProgramArguments
     {
         public CommandArgument Path { get; set; }
@@ -14,57 +21,54 @@ namespace whitespace
         public CommandOption StripTrailingSpaces { get; set; }
         public CommandOption LineEndings { get; set; }
 
+        protected List<string> ParseFileExtensionsOption(List<string> values)
+        {
+            List<string> parsedValues = new List<string>();
+            foreach (var value in values)
+            {
+                parsedValues.AddRange(value.Split(","));
+            }
+            return parsedValues;
+        }
+
         public ConversionOptions GetConfiguration(ConversionType type)
         {
             var options = new ConversionOptions();
             options.Type = type;
-
             options.Paths = Path.Values.Count > 0 ? Path.Values : ConversionOptions.DefaultPaths;
+
+            if (options.Paths.Count == 0)
+            {
+                throw new ConfigurationException("A path must be specified");
+            }
 
             // need to convert to an int, should we refuse stupid values or let you go for it.
             if (TabWidth.HasValue())
             {
                 if (!Int32.TryParse(TabWidth.Value(), out int tabWidth))
                 {
-                    throw new Exception("tabwidth must be a valid number");
+                    throw new ConfigurationException("tabwidth must be a valid number");
                 }
                 options.TabWidth = tabWidth;
-            }
-            else
-            {
-                options.TabWidth = ConversionOptions.DefaultTabWidth;
             }
 
             if (Path.Values.Count > 0)
             {
                 options.Paths = Path.Values;
             }
-            else
-            {
-                options.Paths = ConversionOptions.DefaultPaths;
-            }
 
             if (IncludeExtensions.HasValue())
             {
-                options.IncludeExtensions = IncludeExtensions.Values;
-            }
-            else
-            {
-                options.IncludeExtensions = ConversionOptions.DefaultIncludeExtensions;
+                options.IncludeExtensions = ParseFileExtensionsOption(IncludeExtensions.Values);
             }
 
             if (ExcludeExtensions.HasValue())
             {
-                options.ExcludeExtensions = ExcludeExtensions.Values;
-            }
-            else
-            {
-                options.ExcludeExtensions = ConversionOptions.DefaultExcludeExtensions;
+                options.ExcludeExtensions = ParseFileExtensionsOption(ExcludeExtensions.Values);
             }
 
             // the presence of recurse means it's on, there is no value
             options.Recurse = Recurse.HasValue();
-
             if (LineEndings.HasValue())
             {
                 var lineEndingStyle = LineEndings.Value().ToLower();
@@ -78,12 +82,8 @@ namespace whitespace
                 }
                 else
                 {
-                    throw new Exception("Line Endings must be crlf or lf");
+                    throw new ConfigurationException("Line Endings must be crlf or lf");
                 }
-            }
-            else
-            {
-                options.LineEndingStyle = ConversionOptions.DefaultLineEndingStyle;
             }
 
             return options;

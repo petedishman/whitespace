@@ -1,4 +1,4 @@
-﻿namespace whitespace
+namespace whitespace
 {
     public enum LineEnding
     {
