@@ -76,6 +76,8 @@ namespace whitespace
                 }
             }
 
+            files.Sort();
+
             return files;
         }
 
