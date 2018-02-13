@@ -17,7 +17,7 @@ namespace whitespace
                 Recurse = command.Option("-r|--recurse", "recurse through child folders (default=false)", CommandOptionType.NoValue),
                 IncludeExtensions = command.Option("-i|--include", "file extensions to include (default=<all>)", CommandOptionType.MultipleValue),
                 ExcludeExtensions = command.Option("-e|--exclude", "extensions to exclude (default=<none>)", CommandOptionType.MultipleValue),
-                ExcludeFolders = command.Option("-x|--eXclude-folders", "exclude folders (default=<none>)", CommandOptionType.MultipleValue),
+                ExcludeFolders = command.Option("-x|--exclude-folders", "exclude folders (default=<none>)", CommandOptionType.MultipleValue),
                 StripTrailingSpaces = command.Option("-s|--strip-trailing-spaces", "strip trailing whitespace from end of lines (default=false)", CommandOptionType.SingleValue),
                 LineEndings = command.Option("-l|--line-endings", "convert line endings to crlf|lf (default=leave alone)", CommandOptionType.SingleValue),
                 DryRun = command.Option("-d|--dry-run", "just show files that would be changed", CommandOptionType.NoValue)
@@ -29,6 +29,10 @@ namespace whitespace
 
         static int Main(string[] args)
         {
+            // todo:
+            // change command line structure so tabs or spaces aren't requried
+            // you might just want to do trailing space or newlines on their own
+
             var app = new CommandLineApplication()
             {
                 Name = "Whitespace",
@@ -84,7 +88,23 @@ namespace whitespace
                 app.ShowHelp();
                 return 1;
             });
-            return app.Execute(args);
+            try
+            {
+                return app.Execute(args);
+            }
+            catch (CommandParsingException ex)
+            {
+                // thrown on unexpected argument
+                Console.Error.WriteLine(ex.Message);
+                Console.WriteLine("");
+                app.ShowHelp();
+                return 1;
+            }
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine($"Unexpected error ({ex.Message})");
+                return 1;
+            }
         }
 
         static int RunConverter(ConversionOptions configuration)

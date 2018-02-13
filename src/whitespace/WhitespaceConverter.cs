@@ -214,7 +214,8 @@ namespace whitespace
                 this.configuration.Paths,
                 this.configuration.Recurse,
                 this.configuration.IncludeExtensions,
-                this.configuration.ExcludeExtensions);
+                this.configuration.ExcludeExtensions,
+                this.configuration.ExcludeFolders);
 
             var files = fileFinder.Find();
 
