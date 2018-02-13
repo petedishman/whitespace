@@ -1,8 +1,9 @@
 namespace whitespace
 {
-    public enum ConversionType
+    public enum IndentationStyle
     {
-        TabsToSpaces,
-        SpacesToTabs
+        Leave,
+        Spaces,
+        Tabs
     }
 }

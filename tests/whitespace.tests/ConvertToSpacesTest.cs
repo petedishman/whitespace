@@ -14,7 +14,7 @@ namespace whitespace.tests
             {
                 LineEndingStyle = LineEnding.None,
                 StripTrailingSpaces = true,
-                Type = ConversionType.TabsToSpaces,
+                Indentation = IndentationStyle.Spaces,
                 TabWidth = 2
             };
             var contents = " \tTesting";
@@ -30,7 +30,7 @@ namespace whitespace.tests
             {
                 LineEndingStyle = LineEnding.None,
                 TabWidth = 4,
-                Type = ConversionType.TabsToSpaces
+                Indentation = IndentationStyle.Spaces
             };
             var contents = " \t Testing\n\t \tTesting\n";
             var expectedContents = "     Testing\n        Testing\n";
@@ -45,7 +45,7 @@ namespace whitespace.tests
             {
                 LineEndingStyle = LineEnding.None,
                 TabWidth = 4,
-                Type = ConversionType.TabsToSpaces
+                Indentation = IndentationStyle.Spaces
             };
             var contents = "\tTesting\n\t\tTesting\n";
             var expectedContents = "    Testing\n        Testing\n";

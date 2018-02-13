@@ -14,7 +14,7 @@ namespace whitespace.tests
             {
                 LineEndingStyle = LineEnding.CRLF,
                 StripTrailingSpaces = true,
-                Type = ConversionType.SpacesToTabs
+                Indentation = IndentationStyle.Tabs
             };
             var contents = @"line 1
 line2
@@ -45,7 +45,7 @@ line4
             {
                 LineEndingStyle = LineEnding.None,
                 TabWidth = 4,
-                Type = ConversionType.SpacesToTabs
+                Indentation = IndentationStyle.Tabs
             };
             var contents = " \t Testing\n\t \tTesting\n";
             var expectedContents = "\t\tTesting\n\t\t\tTesting\n";

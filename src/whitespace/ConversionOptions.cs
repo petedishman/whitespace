@@ -5,6 +5,7 @@ namespace whitespace
     public class ConversionOptions
     {
         public static readonly List<string> DefaultPaths = new List<string>();
+        public static readonly IndentationStyle DefaultIndentationStyle = IndentationStyle.Leave;
         public static readonly int DefaultTabWidth = 4;
         public static readonly List<string> DefaultIncludeExtensions = new List<string>() {"*"};
         public static readonly List<string> DefaultExcludeExtensions = new List<string>();
@@ -12,7 +13,8 @@ namespace whitespace
         public static readonly bool DefaultStripTrailingSpaces = true;
         public static readonly LineEnding DefaultLineEndingStyle = LineEnding.None;
 
-        public ConversionType Type {get; set;}
+
+        public IndentationStyle Indentation { get; set; } = DefaultIndentationStyle;
         public List<string> Paths { get; set; } = DefaultPaths;
         public int TabWidth { get; set; } = DefaultTabWidth;
         public bool Recurse { get; set; } = false;

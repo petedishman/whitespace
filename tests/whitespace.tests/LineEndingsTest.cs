@@ -13,7 +13,7 @@ namespace whitespace.tests
             var options = new ConversionOptions()
             {
                 LineEndingStyle = LineEnding.CRLF,
-                Type = ConversionType.TabsToSpaces
+                Indentation = IndentationStyle.Spaces
             };
             var contents = "Testing\nTesting\n";
             var expectedContents = "Testing\r\nTesting\r\n";
@@ -27,7 +27,7 @@ namespace whitespace.tests
             var options = new ConversionOptions()
             {
                 LineEndingStyle = LineEnding.LF,
-                Type = ConversionType.TabsToSpaces
+                Indentation = IndentationStyle.Spaces
             };
             var contents = "Testing\r\nTesting\r\n";
             var expectedContents = "Testing\nTesting\n";
@@ -41,7 +41,7 @@ namespace whitespace.tests
             var options = new ConversionOptions()
             {
                 LineEndingStyle = LineEnding.None,
-                Type = ConversionType.TabsToSpaces
+                Indentation = IndentationStyle.Spaces
             };
             var contents = "Testing\nTesting\r\n";
             var expectedContents = "Testing\nTesting\r\n";
@@ -56,7 +56,7 @@ namespace whitespace.tests
             {
                 LineEndingStyle = LineEnding.CRLF,
                 StripTrailingSpaces = true,
-                Type = ConversionType.TabsToSpaces
+                Indentation = IndentationStyle.Spaces
             };
             var contents = "Testing\nTesting\n";
             var expectedContents = "Testing\r\nTesting\r\n";
@@ -71,7 +71,7 @@ namespace whitespace.tests
             {
                 LineEndingStyle = LineEnding.LF,
                 StripTrailingSpaces = true,
-                Type = ConversionType.TabsToSpaces
+                Indentation = IndentationStyle.Spaces
             };
             var contents = "Testing\r\nTesting\r\n";
             var expectedContents = "Testing\nTesting\n";
@@ -86,7 +86,7 @@ namespace whitespace.tests
             {
                 LineEndingStyle = LineEnding.None,
                 StripTrailingSpaces = true,
-                Type = ConversionType.TabsToSpaces
+                Indentation = IndentationStyle.Spaces
             };
             var contents = "Testing\nTesting\r\n";
             var expectedContents = "Testing\nTesting\r\n";

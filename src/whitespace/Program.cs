@@ -6,13 +6,11 @@ namespace whitespace
 {
     class Program
     {
-        // don't run on current path by default
-        // that makes the options very hard to discover
-
         static ProgramArguments AddConversionOptions(CommandLineApplication command)
         {
             var options = new ProgramArguments() {
                 Path = command.Argument("path", "the file path containing files to process", true),
+                IndentStyle = command.Option("--indent", "spaces, tabs, leave (default=leave)", CommandOptionType.SingleValue),
                 TabWidth = command.Option("-t|--tabwidth", $"number of spaces per tab (default={ConversionOptions.DefaultTabWidth})", CommandOptionType.SingleValue),
                 Recurse = command.Option("-r|--recurse", "recurse through child folders (default=false)", CommandOptionType.NoValue),
                 IncludeExtensions = command.Option("-i|--include", "file extensions to include (default=<all>)", CommandOptionType.MultipleValue),
@@ -23,16 +21,12 @@ namespace whitespace
                 DryRun = command.Option("-d|--dry-run", "just show files that would be changed", CommandOptionType.NoValue)
                 // add verbose option to list each file changed or inspected?
             };
-            command.HelpOption("-h|--help");
+            //command.HelpOption("-h|--help");
             return options;
         }
 
         static int Main(string[] args)
         {
-            // todo:
-            // change command line structure so tabs or spaces aren't requried
-            // you might just want to do trailing space or newlines on their own
-
             var app = new CommandLineApplication()
             {
                 Name = "Whitespace",
@@ -41,53 +35,25 @@ namespace whitespace
             };
             app.HelpOption("-h|--help");
             app.VersionOptionFromAssemblyAttributes(Assembly.GetExecutingAssembly());
-            /*
-            whitespace tabify -tabwidth=4
-            whitespace spacify -tabwidth=2
-            whitespace report
-            specify paths - default to current path
-            file extensions to include
-            file extensions to exclude
-            folders to exclude
-            */
-            app.Command("tabs", (command) => {
-                var options = AddConversionOptions(command);
-                command.OnExecute(() => {
-                    try
-                    {
-                        var configuration = options.GetConfiguration(ConversionType.SpacesToTabs);
-                        return RunConverter(configuration);
-                    }
-                    catch (ConfigurationException ex)
-                    {
-                        Console.WriteLine("Invalid option: {0}\n", ex.Message);
-                        app.ShowHelp(command.Name);
-                        return 1;
-                    }
-                });
-            });
-            app.Command("spaces", (command) => {
-                var options = AddConversionOptions(command);
-                command.OnExecute(() => {
-                    try
-                    {
-                        var configuration = options.GetConfiguration(ConversionType.TabsToSpaces);
-                        return RunConverter(configuration);
-                    }
-                    catch (ConfigurationException ex)
-                    {
-                        Console.WriteLine("Invalid option: {0}\n", ex.Message);
-                        app.ShowHelp(command.Name);
-                        return 1;
-                    }
-                });
-            });
-            // will fire when nothing else does
+            var options = AddConversionOptions(app);
+
             app.OnExecute(() =>
             {
-                app.ShowHelp();
-                return 1;
+                try
+                {
+                    var configuration = options.GetConfiguration();
+                    var converter = new WhitespaceConverter(configuration);
+                    converter.RunAsync().Wait();
+                    return 0;
+                }
+                catch (ConfigurationException ex)
+                {
+                    Console.WriteLine("Invalid option: {0}\n", ex.Message);
+                    app.ShowHelp();
+                    return 1;
+                }
             });
+
             try
             {
                 return app.Execute(args);
@@ -105,13 +71,6 @@ namespace whitespace
                 Console.Error.WriteLine($"Unexpected error ({ex.Message})");
                 return 1;
             }
-        }
-
-        static int RunConverter(ConversionOptions configuration)
-        {
-            var converter = new WhitespaceConverter(configuration);
-            converter.RunAsync().Wait();
-            return 0;
         }
     }
 }

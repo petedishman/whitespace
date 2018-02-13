@@ -14,7 +14,7 @@ namespace whitespace.tests
             {
                 LineEndingStyle = LineEnding.None,
                 StripTrailingSpaces = true,
-                Type = ConversionType.TabsToSpaces
+                Indentation = IndentationStyle.Spaces
             };
             var contents = "Testing\t ";
             var expectedContents = "Testing";
@@ -29,7 +29,7 @@ namespace whitespace.tests
             {
                 LineEndingStyle = LineEnding.None,
                 StripTrailingSpaces = true,
-                Type = ConversionType.TabsToSpaces
+                Indentation = IndentationStyle.Spaces
             };
             var contents = "Testing\t \nTesting 1,2,3   \n\ntest 1";
             var expectedContents = "Testing\nTesting 1,2,3\n\ntest 1";
@@ -44,7 +44,7 @@ namespace whitespace.tests
             {
                 LineEndingStyle = LineEnding.LF,
                 StripTrailingSpaces = true,
-                Type = ConversionType.SpacesToTabs
+                Indentation = IndentationStyle.Tabs
             };
             var contents = "testing\n \n\ntesting\n";
             var expected = "testing\n\n\ntesting\n";
@@ -59,7 +59,7 @@ namespace whitespace.tests
             {
                 LineEndingStyle = LineEnding.CRLF,
                 StripTrailingSpaces = true,
-                Type = ConversionType.SpacesToTabs
+                Indentation = IndentationStyle.Tabs
             };
             var contents = "testing\r\n \r\n\r\ntesting\r\n";
             var expected = "testing\r\n\r\n\r\ntesting\r\n";

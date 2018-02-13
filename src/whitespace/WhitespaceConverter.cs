@@ -118,7 +118,7 @@ namespace whitespace
             // 01234567890
             // ...........
 
-            if (configuration.Type == ConversionType.TabsToSpaces)
+            if (configuration.Indentation == IndentationStyle.Spaces)
             {
                 fileContents = leadingWhitespace.Replace(fileContents, match => {
                     // match.Value is a string of tabs and/or spaces
@@ -148,7 +148,7 @@ namespace whitespace
                     return new string(' ', newSpaceCount);
                 });
             }
-            else // ConversionType.SpacesToTabs
+            else if (configuration.Indentation == IndentationStyle.Tabs)
             {
                 // is this right
                 // do you want to turn '\t ' to '\t\t'
