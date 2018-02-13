@@ -1,6 +1,6 @@
-﻿using System;
+using System;
 
-namespace whitespace
+namespace Whitespace
 {
     public class ConfigurationException : Exception
     {

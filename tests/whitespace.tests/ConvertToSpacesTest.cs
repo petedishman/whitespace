@@ -3,7 +3,7 @@ using Xunit;
 using System.Collections.Generic;
 using System.Text;
 
-namespace whitespace.tests
+namespace Whitespace.Tests
 {
     public class ConvertToSpacesTest : TestBase
     {

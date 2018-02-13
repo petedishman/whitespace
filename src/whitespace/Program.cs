@@ -2,7 +2,7 @@ using System;
 using McMaster.Extensions.CommandLineUtils;
 using System.Reflection;
 
-namespace whitespace
+namespace Whitespace
 {
     class Program
     {

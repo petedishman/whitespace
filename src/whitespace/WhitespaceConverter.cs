@@ -6,7 +6,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Linq;
 
-namespace whitespace
+namespace Whitespace
 {
     public class WhitespaceConverter
     {
@@ -194,10 +194,18 @@ namespace whitespace
             // first line, handle BOM
             try
             {
-                var fileContents = await File.ReadAllTextAsync(filepath);
+                var fileContents = "";
+                using (var reader = File.OpenText(filepath))
+                {
+                    fileContents = await reader.ReadToEndAsync();
+                }
+
                 var convertedFile = ConvertFileText(fileContents);
 
-                await File.WriteAllTextAsync(filepath, convertedFile);
+                // can we write async?
+                // in .net core we can just do:
+                //await File.WriteAllTextAsync(filepath, convertedFile);
+                File.WriteAllText(filepath, convertedFile);
 
                 return true;
             }

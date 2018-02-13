@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-namespace whitespace
+namespace Whitespace
 {
     // An instance of this class will be passed in when we actually want to do something
     public class ConversionOptions

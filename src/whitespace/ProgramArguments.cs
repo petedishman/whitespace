@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using McMaster.Extensions.CommandLineUtils;
 
-namespace whitespace
+namespace Whitespace
 {
 
     public class ProgramArguments
@@ -23,7 +23,7 @@ namespace whitespace
             List<string> parsedValues = new List<string>();
             foreach (var value in values)
             {
-                parsedValues.AddRange(value.Split(","));
+                parsedValues.AddRange(value.Split(','));
             }
             return parsedValues;
         }

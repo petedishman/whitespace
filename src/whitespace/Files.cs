@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 
-namespace whitespace
+namespace Whitespace
 {
     public class Files
     {
@@ -28,7 +28,15 @@ namespace whitespace
         {
             if (excludeFolders.Count > 0)
             {
-                var relativePath = Path.GetRelativePath(rootPath, Path.GetDirectoryName(file));
+                // rootPath is something like c:\build\liberty\tputils
+                // file is: c:\build\liberty\tputils\fileconverter\main.cpp
+                // we want fileconverter\main.cpp
+
+                // .net core has Path.GetRelativePath() which is very handy
+                //var relativePath = Path.GetRelativePath(rootPath, Path.GetDirectoryName(file));
+                // instead we bodge it with this:
+                var relativePath = Path.GetDirectoryName(file).Replace(rootPath, "");
+
                 foreach (var folder in excludeFolders)
                 {
                     if ($"\\{relativePath}\\".Contains($"\\{folder}\\"))
