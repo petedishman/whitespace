@@ -6,17 +6,17 @@ image: Visual Studio 2017
 before_build:
   - nuget restore
 
-configuration: 
+configuration:
  - Release
 platform: Any CPU
 
 artifacts:
  - path: src\whitespace\bin\release\whitespace.exe
 
- deploy:
-  - provider: Github
-    description: release description
-    artifact: whitespace.exe
-    on:
-      branch: master
-      appveyor_repo_tag: true
+deploy:
+ - provider: GitHub
+   description: release description
+   artifact: whitespace.exe
+   on:
+     branch: master
+     appveyor_repo_tag: true
