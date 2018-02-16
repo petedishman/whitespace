@@ -12,7 +12,7 @@ namespace Whitespace.Tests
         {
             var options = new ConversionOptions()
             {
-                LineEndingStyle = LineEnding.None,
+                LineEndingStyle = LineEnding.Leave,
                 StripTrailingSpaces = true,
                 Indentation = IndentationStyle.Spaces
             };
@@ -27,7 +27,7 @@ namespace Whitespace.Tests
         {
             var options = new ConversionOptions()
             {
-                LineEndingStyle = LineEnding.None,
+                LineEndingStyle = LineEnding.Leave,
                 StripTrailingSpaces = true,
                 Indentation = IndentationStyle.Spaces
             };

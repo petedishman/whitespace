@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 namespace Whitespace
 {
-    // An instance of this class will be passed in when we actually want to do something
     public class ConversionOptions
     {
         public static readonly List<string> DefaultPaths = new List<string>();
@@ -11,8 +10,7 @@ namespace Whitespace
         public static readonly List<string> DefaultExcludeExtensions = new List<string>();
         public static readonly List<string> DefaultExcludeFolders = new List<string>();
         public static readonly bool DefaultStripTrailingSpaces = true;
-        public static readonly LineEnding DefaultLineEndingStyle = LineEnding.None;
-
+        public static readonly LineEnding DefaultLineEndingStyle = LineEnding.Leave;
 
         public IndentationStyle Indentation { get; set; } = DefaultIndentationStyle;
         public List<string> Paths { get; set; } = DefaultPaths;

@@ -43,7 +43,7 @@ line4
         {
             var options = new ConversionOptions()
             {
-                LineEndingStyle = LineEnding.None,
+                LineEndingStyle = LineEnding.Leave,
                 TabWidth = 4,
                 Indentation = IndentationStyle.Tabs
             };

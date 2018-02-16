@@ -59,20 +59,15 @@ namespace Whitespace
             return false;
         }
 
-        // for unit testing we'd need to be able to replace Directory.EnumerateFiles
         public IList<string> Find()
         {
-            // need to actually support --exclude-folders
-            // exclude a path if any component matches a given value
-            // probably ignore parts of the path before where we're looking if that makes sense
-
             var files = new List<string>();
             foreach (var path in paths)
             {
                 foreach (var includeExtension in includeExtensions)
                 {
                     var searchOption = recurse ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly;
-                    var searchPattern = "*."+includeExtension;
+                    var searchPattern = "*." + includeExtension;
                     foreach (var file in Directory.EnumerateFiles(path, searchPattern, searchOption))
                     {
                         if (ShouldExcludeFile(path, file))

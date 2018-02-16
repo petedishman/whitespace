@@ -12,7 +12,7 @@ namespace Whitespace.Tests
         {
             var options = new ConversionOptions()
             {
-                LineEndingStyle = LineEnding.None,
+                LineEndingStyle = LineEnding.Leave,
                 StripTrailingSpaces = true,
                 Indentation = IndentationStyle.Spaces,
                 TabWidth = 2
@@ -28,7 +28,7 @@ namespace Whitespace.Tests
         {
             var options = new ConversionOptions()
             {
-                LineEndingStyle = LineEnding.None,
+                LineEndingStyle = LineEnding.Leave,
                 TabWidth = 4,
                 Indentation = IndentationStyle.Spaces
             };
@@ -43,7 +43,7 @@ namespace Whitespace.Tests
         {
             var options = new ConversionOptions()
             {
-                LineEndingStyle = LineEnding.None,
+                LineEndingStyle = LineEnding.Leave,
                 TabWidth = 4,
                 Indentation = IndentationStyle.Spaces
             };

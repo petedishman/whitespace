@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Linq;
@@ -19,19 +18,9 @@ namespace Whitespace
 
         public async Task RunAsync()
         {
-            // get the files
-            // foreach file
-            //   open file
-            //   read in each line
-            //      optionally strip trailing space
-            //      optionally convert line ending
-            //      convert tabs|spaces at beginning of line to spaces|tabs
-            //   write file back
-            //   back up file?
-            // what about tabs|spaces in the middle of a line
-            // would need to do something where you don't touch whitespace inside " or '
-
-            await Task.WhenAll(GetFiles().Select((file) => {
+            await Task.WhenAll(GetFiles().Select((file) =>
+            {
+                // should we have a quiet mode where we don't do this?
                 Console.WriteLine(" {0}", file);
 
                 if (configuration.DryRun)
@@ -45,37 +34,30 @@ namespace Whitespace
 
         // detect all line endings LF or CRLF ready to normalize them
         Regex lineEndings = new Regex(@"(\n|\r\n?)", RegexOptions.Singleline | RegexOptions.Compiled);
+
         // find trailing whitespace before a lf|crlf - need to do this as Multiline and $ only matches lf
         Regex trailingWhitespace = new Regex(@"([\t ]+)(\r?\n)", RegexOptions.Singleline | RegexOptions.Compiled);
         // the above regex will miss trailing whitespace at the end of a file, so find that with this
         Regex endOfFileWhitespace = new Regex(@"([\t ]+)$", RegexOptions.Singleline | RegexOptions.Compiled);
+
         // find leading whitespace ready to normalize to tabs or spaces
         Regex leadingWhitespace = new Regex(@"^([\t ]+)", RegexOptions.Multiline | RegexOptions.Compiled);
 
         public string ConvertFileText(string fileContents)
         {
-            // fileContents is a giant string with the whole file in it
-            // run it through some/one regular expression(s) to convert it
-            // need to run multiple regexes
-            if (configuration.LineEndingStyle != LineEnding.None)
+            if (configuration.LineEndingStyle != LineEnding.Leave)
             {
-                // normalize line endings
-                var lineEnding = configuration.LineEndingStyle == LineEnding.CRLF ? "\r\n" : "\n";
-                fileContents = lineEndings.Replace(fileContents, lineEnding);
+                var desiredLineEnding = configuration.LineEndingStyle == LineEnding.CRLF ? "\r\n" : "\n";
+                fileContents = lineEndings.Replace(fileContents, desiredLineEnding);
             }
 
             if (configuration.StripTrailingSpaces)
             {
-                // Multiline mode means $ only recognises \n
-                // so we need to look for \r?$ instead
+                // Has to be done via 2 regexs, first gets most lines
+                // second gets the last line in a file which may not end in newline
+
+                // $2 is the newline style that the line ends in
                 fileContents = trailingWhitespace.Replace(fileContents, "$2");
-
-                // the above won't detect trailing space on the last line of a file
-                // when it doesn't have a newline following it
-                // but we need to do it like this to avoid issues with different
-                // line endings.
-
-                // can we do a second regex that just does a replace for the end of file?
                 fileContents = endOfFileWhitespace.Replace(fileContents, "");
             }
 
@@ -120,7 +102,8 @@ namespace Whitespace
 
             if (configuration.Indentation == IndentationStyle.Spaces)
             {
-                fileContents = leadingWhitespace.Replace(fileContents, match => {
+                fileContents = leadingWhitespace.Replace(fileContents, match =>
+                {
                     // match.Value is a string of tabs and/or spaces
                     // we want to remove any redundant spaces then convert
                     // tabs to spaces, then return that.
@@ -165,7 +148,8 @@ namespace Whitespace
                 // assuming a tab width of 4
                 //
                 // "\t " => ""
-                fileContents = leadingWhitespace.Replace(fileContents, match => {
+                fileContents = leadingWhitespace.Replace(fileContents, match =>
+                {
                     // match.Value contains spaces & tabs
                     // need to know how many spaces there are and how many tabs.
                     // then replace initial whitespace with x tabs
@@ -191,9 +175,12 @@ namespace Whitespace
 
         public async Task<bool> ConvertFileAsync(string filepath)
         {
-            // first line, handle BOM
             try
             {
+                // In .net core this is super simpe
+                // as we have File.ReadAllTextAsync and File.WriteAllTextAsync
+                // in standard .net we need a bit more effort
+
                 var fileContents = "";
                 using (var reader = File.OpenText(filepath))
                 {
@@ -202,9 +189,6 @@ namespace Whitespace
 
                 var convertedFile = ConvertFileText(fileContents);
 
-                // can we write async?
-                // in .net core we can just do:
-                //await File.WriteAllTextAsync(filepath, convertedFile);
                 File.WriteAllText(filepath, convertedFile);
 
                 return true;
@@ -218,16 +202,15 @@ namespace Whitespace
 
         public IList<string> GetFiles()
         {
+            // might as well just pass in configuration at this point?
             var fileFinder = new Files(
-                this.configuration.Paths,
-                this.configuration.Recurse,
-                this.configuration.IncludeExtensions,
-                this.configuration.ExcludeExtensions,
-                this.configuration.ExcludeFolders);
+                configuration.Paths,
+                configuration.Recurse,
+                configuration.IncludeExtensions,
+                configuration.ExcludeExtensions,
+                configuration.ExcludeFolders);
 
-            var files = fileFinder.Find();
-
-            return files;
+            return fileFinder.Find();
         }
     }
 }

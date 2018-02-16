@@ -40,7 +40,7 @@ namespace Whitespace.Tests
         {
             var options = new ConversionOptions()
             {
-                LineEndingStyle = LineEnding.None,
+                LineEndingStyle = LineEnding.Leave,
                 Indentation = IndentationStyle.Spaces
             };
             var contents = "Testing\nTesting\r\n";
@@ -84,7 +84,7 @@ namespace Whitespace.Tests
         {
             var options = new ConversionOptions()
             {
-                LineEndingStyle = LineEnding.None,
+                LineEndingStyle = LineEnding.Leave,
                 StripTrailingSpaces = true,
                 Indentation = IndentationStyle.Spaces
             };

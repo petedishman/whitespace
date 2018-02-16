@@ -4,7 +4,6 @@ using McMaster.Extensions.CommandLineUtils;
 
 namespace Whitespace
 {
-
     public class ProgramArguments
     {
         public CommandArgument Path { get; set; }
@@ -60,7 +59,6 @@ namespace Whitespace
                 }
             }
 
-            // need to convert to an int, should we refuse stupid values or let you go for it.
             if (TabWidth.HasValue())
             {
                 if (!Int32.TryParse(TabWidth.Value(), out int tabWidth))

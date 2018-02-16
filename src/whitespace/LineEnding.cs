@@ -4,6 +4,6 @@ namespace Whitespace
     {
         LF,
         CRLF,
-        None
+        Leave
     }
 }
