@@ -12,12 +12,13 @@ platform: Any CPU
 
 artifacts:
  - path: src\whitespace\bin\release\whitespace.exe
+   name: whitespace_executable
 
 deploy:
  - provider: GitHub
    description: release description
    auth_token:
      secure: 3OhlF7ddpR8oLicTBUqcdtu7UByrPCEDcYbbNbcsDbA7Kxx8rGP+pJMWBwG9zXy9
-   artifact: whitespace.exe
+   artifact: whitespace_executable
    on:
      appveyor_repo_tag: true
