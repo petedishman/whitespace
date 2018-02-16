@@ -18,5 +18,4 @@ deploy:
    description: release description
    artifact: whitespace.exe
    on:
-     branch: master
      appveyor_repo_tag: true
