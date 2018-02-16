@@ -16,7 +16,6 @@ artifacts:
 
 deploy:
  - provider: GitHub
-   description: release description
    auth_token:
      secure: 3OhlF7ddpR8oLicTBUqcdtu7UByrPCEDcYbbNbcsDbA7Kxx8rGP+pJMWBwG9zXy9
    artifact: whitespace_executable
