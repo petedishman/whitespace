@@ -1,6 +1,8 @@
 init:
   - git config --global core.autocrlf true
 
+version: {branch}-{build}
+
 image: Visual Studio 2017
 
 before_build:
