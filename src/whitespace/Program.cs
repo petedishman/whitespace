@@ -17,7 +17,7 @@ namespace Whitespace
                 IncludeExtensions = command.Option("-i|--include", "file extensions to include, e.g. --include=cpp --include=c,cpp,h,hpp (default=<all>)", CommandOptionType.MultipleValue),
                 ExcludeExtensions = command.Option("-e|--exclude", "file extensions to exclude (default=<none>)", CommandOptionType.MultipleValue),
                 ExcludeFolders = command.Option("-x|--exclude-folders", "exclude folders (default=<none>)", CommandOptionType.MultipleValue),
-                StripTrailingSpaces = command.Option("-s|--strip-trailing-spaces", "strip trailing whitespace from end of lines (default=false)", CommandOptionType.SingleValue),
+                StripTrailingSpaces = command.Option("-s|--strip-trailing-spaces", "strip trailing whitespace from end of lines (default=false)", CommandOptionType.NoValue),
                 LineEndings = command.Option("-l|--line-endings", "convert line endings to crlf|lf (default=leave alone)", CommandOptionType.SingleValue),
                 DryRun = command.Option("-d|--dry-run", "just show files that would be changed but don't do anything", CommandOptionType.NoValue)
             };
@@ -36,6 +36,12 @@ namespace Whitespace
             app.HelpOption("-h|--help");
             app.VersionOptionFromAssemblyAttributes(Assembly.GetExecutingAssembly());
             var options = AddConversionOptions(app);
+
+            if (args.Length == 0)
+            {
+                app.ShowHelp();
+                return 0;
+            }
 
             app.OnExecute(() =>
             {

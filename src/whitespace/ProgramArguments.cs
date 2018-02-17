@@ -59,6 +59,33 @@ namespace Whitespace
                 }
             }
 
+            if (LineEndings.HasValue())
+            {
+                var lineEndingStyle = LineEndings.Value().ToLower();
+                if (lineEndingStyle == "crlf")
+                {
+                    options.LineEndingStyle = LineEnding.CRLF;
+                }
+                else if (lineEndingStyle == "lf")
+                {
+                    options.LineEndingStyle = LineEnding.LF;
+                }
+                else
+                {
+                    throw new ConfigurationException("Line Endings must be crlf or lf");
+                }
+            }
+
+            options.StripTrailingSpaces = StripTrailingSpaces.HasValue();
+
+            // no point going any further if one of the change options isn't actually specified
+            if (options.StripTrailingSpaces == false &&
+                options.Indentation == IndentationStyle.Leave &&
+                options.LineEndingStyle == LineEnding.Leave)
+            {
+                throw new ConfigurationException("Nothing to do, you must specify one of --strip-trailing-spaces, --line-endings or --indent");
+            }
+
             if (TabWidth.HasValue())
             {
                 if (!Int32.TryParse(TabWidth.Value(), out int tabWidth))
@@ -81,23 +108,6 @@ namespace Whitespace
             if (ExcludeFolders.HasValue())
             {
                 options.ExcludeFolders = ExcludeFolders.Values;
-            }
-
-            if (LineEndings.HasValue())
-            {
-                var lineEndingStyle = LineEndings.Value().ToLower();
-                if (lineEndingStyle == "crlf")
-                {
-                    options.LineEndingStyle = LineEnding.CRLF;
-                }
-                else if (lineEndingStyle == "lf")
-                {
-                    options.LineEndingStyle = LineEnding.LF;
-                }
-                else
-                {
-                    throw new ConfigurationException("Line Endings must be crlf or lf");
-                }
             }
 
             // the presence of recurse|dryrun means it's on, there is no value
