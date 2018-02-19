@@ -9,7 +9,7 @@ namespace Whitespace
         public static readonly List<string> DefaultIncludeExtensions = new List<string>() {"*"};
         public static readonly List<string> DefaultExcludeExtensions = new List<string>();
         public static readonly List<string> DefaultExcludeFolders = new List<string>();
-        public static readonly bool DefaultStripTrailingSpaces = true;
+        public static readonly bool DefaultStripTrailingSpaces = false;
         public static readonly LineEnding DefaultLineEndingStyle = LineEnding.Leave;
 
         public IndentationStyle Indentation { get; set; } = DefaultIndentationStyle;
