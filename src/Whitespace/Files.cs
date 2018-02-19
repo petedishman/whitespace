@@ -1,27 +1,22 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.IO;
 
 namespace Whitespace
 {
     public class Files
     {
-        public Files(IList<string> paths, bool recurse, IList<string> includeExtensions, IList<string> excludeExtensions, IList<string> excludeFolders)
+        public Files(ConversionOptions options)
         {
-            this.paths = paths;
-            this.includeExtensions = includeExtensions;
-            this.excludeExtensions = excludeExtensions;
-            this.excludeFolders = excludeFolders;
-            this.recurse = recurse;
-        }
+            this.paths = options.Paths;
+            this.includeExtensions = options.IncludeExtensions;
+            this.excludeExtensions = options.ExcludeExtensions;
+            this.excludeFolders = options.ExcludeFolders;
+            this.recurse = options.Recurse;
 
-        public Files(string path, bool recurse, IList<string> includeExtensions, IList<string> excludeExtensions, IList<string> excludeFolders)
-        {
-            this.paths = new List<string>() { path };
-            this.includeExtensions = includeExtensions;
-            this.excludeExtensions = excludeExtensions;
-            this.excludeFolders = excludeFolders;
-            this.recurse = recurse;
+            this.files = options.Files;
+            this.listFile = options.ListFile;
         }
 
         protected bool ShouldExcludeFile(string rootPath, string file)
@@ -61,7 +56,9 @@ namespace Whitespace
 
         public IList<string> Find()
         {
-            var files = new List<string>();
+            var filesToProcess = new List<string>();
+
+            // first check for any matching files under path(s)
             foreach (var path in paths)
             {
                 foreach (var includeExtension in includeExtensions)
@@ -79,9 +76,31 @@ namespace Whitespace
                 }
             }
 
-            files.Sort();
+            // add any explicitly mentioned files
+            filesToProcess.AddRange(this.files);
 
-            return files;
+            // read in any files from list file
+            filesToProcess.AddRange(GetFilesFromListFile());
+
+            // now sort the list so that the order isn't mental
+            filesToProcess.Sort();
+
+            return filesToProcess;
+        }
+
+        protected IList<string> GetFilesFromListFile()
+        {
+            var listedFiles = new List<string>();
+
+            if (listFile.Length > 0)
+            {
+                // no validation at this stage
+                var file = File.ReadAllLines(listFile);
+                // remove empty lines
+                return file.Where(line => line.Trim().Length > 0).ToList();                
+            }
+
+            return listedFiles;
         }
 
         private IList<string> paths;
@@ -89,5 +108,8 @@ namespace Whitespace
         private IList<string> excludeExtensions;
         private readonly IList<string> excludeFolders;
         private bool recurse;
+
+        private IList<string> files;
+        private string listFile;
     }
 }

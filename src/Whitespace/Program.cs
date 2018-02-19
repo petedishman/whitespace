@@ -10,16 +10,18 @@ namespace Whitespace
         {
             var options = new ProgramArguments()
             {
-                Path = command.Argument("path", "the file path containing files to process", multipleValues: true),
+                Path = command.Option("--path", "file paths to search for files in", CommandOptionType.MultipleValue),
+                File = command.Option("--file", "a specific file to process", CommandOptionType.MultipleValue),
+                List = command.Option("--list", "a text file containing the filenames to process", CommandOptionType.SingleValue),
                 IndentStyle = command.Option("--indent", "spaces, tabs or leave (default=leave)", CommandOptionType.SingleValue),
-                TabWidth = command.Option("-t|--tabwidth", $"number of spaces per tab (default={ConversionOptions.DefaultTabWidth})", CommandOptionType.SingleValue),
-                Recurse = command.Option("-r|--recurse", "recurse through sub-folders when finding files (default=false)", CommandOptionType.NoValue),
-                IncludeExtensions = command.Option("-i|--include", "file extensions to include, e.g. --include=cpp --include=c,cpp,h,hpp (default=<all>)", CommandOptionType.MultipleValue),
-                ExcludeExtensions = command.Option("-e|--exclude", "file extensions to exclude (default=<none>)", CommandOptionType.MultipleValue),
-                ExcludeFolders = command.Option("-x|--exclude-folders", "exclude folders (default=<none>)", CommandOptionType.MultipleValue),
-                StripTrailingSpaces = command.Option("-s|--strip-trailing-spaces", "strip trailing whitespace from end of lines (default=false)", CommandOptionType.NoValue),
-                LineEndings = command.Option("-l|--line-endings", "convert line endings to crlf|lf (default=leave alone)", CommandOptionType.SingleValue),
-                DryRun = command.Option("-d|--dry-run", "just show files that would be changed but don't do anything", CommandOptionType.NoValue)
+                TabWidth = command.Option("--tabwidth", $"number of spaces per tab (default={ConversionOptions.DefaultTabWidth})", CommandOptionType.SingleValue),
+                Recurse = command.Option("--recurse", "recurse through sub-folders when finding files (default=false)", CommandOptionType.NoValue),
+                IncludeExtensions = command.Option("--include", "file extensions to include, e.g. --include=cpp --include=c,cpp,h,hpp (default=<all>)", CommandOptionType.MultipleValue),
+                ExcludeExtensions = command.Option("--exclude", "file extensions to exclude (default=<none>)", CommandOptionType.MultipleValue),
+                ExcludeFolders = command.Option("--exclude-folders", "exclude folders (default=<none>)", CommandOptionType.MultipleValue),
+                StripTrailingSpaces = command.Option("--strip-trailing-spaces", "strip trailing whitespace from end of lines (default=false)", CommandOptionType.NoValue),
+                LineEndings = command.Option("--line-endings", "convert line endings to crlf|lf (default=leave alone)", CommandOptionType.SingleValue),
+                DryRun = command.Option("--dry-run", "just show files that would be changed but don't do anything", CommandOptionType.NoValue)
             };
 
             return options;

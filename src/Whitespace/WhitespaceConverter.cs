@@ -203,13 +203,7 @@ namespace Whitespace
         public IList<string> GetFiles()
         {
             // might as well just pass in configuration at this point?
-            var fileFinder = new Files(
-                configuration.Paths,
-                configuration.Recurse,
-                configuration.IncludeExtensions,
-                configuration.ExcludeExtensions,
-                configuration.ExcludeFolders);
-
+            var fileFinder = new Files(configuration);
             return fileFinder.Find();
         }
     }

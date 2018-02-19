@@ -6,7 +6,9 @@ namespace Whitespace
 {
     public class ProgramArguments
     {
-        public CommandArgument Path { get; set; }
+        public CommandOption Path { get; set; }
+        public CommandOption File { get; set; }
+        public CommandOption List { get; set; }
         public CommandOption IndentStyle { get; set; }
         public CommandOption TabWidth { get; set; }
         public CommandOption Recurse { get; set; }
@@ -17,25 +19,30 @@ namespace Whitespace
         public CommandOption LineEndings { get; set; }
         public CommandOption DryRun { get; set; }
 
-        protected List<string> ParseFileExtensionsOption(List<string> values)
-        {
-            List<string> parsedValues = new List<string>();
-            foreach (var value in values)
-            {
-                parsedValues.AddRange(value.Split(','));
-            }
-            return parsedValues;
-        }
-
         public ConversionOptions GetConfiguration()
         {
             var options = new ConversionOptions();
 
-            options.Paths = Path.Values.Count > 0 ? Path.Values : ConversionOptions.DefaultPaths;
-
-            if (options.Paths.Count == 0)
+            if (Path.HasValue())
             {
-                throw new ConfigurationException("A path must be specified");
+                options.Paths = Path.Values;
+            }
+
+            if (File.HasValue())
+            {
+                options.Files = File.Values;
+            }
+
+            if (List.HasValue())
+            {
+                options.ListFile = List.Value();
+            }
+
+            if (options.Paths.Count == 0 &&
+                options.Files.Count == 0 &&
+                String.IsNullOrEmpty(options.ListFile))
+            {
+                throw new ConfigurationException("Nothing to process, must specify one of --path, --file or --list");
             }
 
             if (IndentStyle.HasValue())
@@ -115,6 +122,16 @@ namespace Whitespace
             options.DryRun = DryRun.HasValue();
 
             return options;
+        }
+
+        protected List<string> ParseFileExtensionsOption(List<string> values)
+        {
+            List<string> parsedValues = new List<string>();
+            foreach (var value in values)
+            {
+                parsedValues.AddRange(value.Split(','));
+            }
+            return parsedValues;
         }
     }
 }
