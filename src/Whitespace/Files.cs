@@ -34,7 +34,7 @@ namespace Whitespace
 
                 foreach (var folder in excludeFolders)
                 {
-                    if ($"\\{relativePath}\\".Contains($"\\{folder}\\"))
+                    if ($"\\{relativePath}\\".Contains($"\\{folder}\\", StringComparison.CurrentCultureIgnoreCase))
                     {
                         return true;
                     }
