@@ -189,7 +189,14 @@ namespace Whitespace
 
                 var convertedFile = ConvertFileText(fileContents);
 
-                File.WriteAllText(filepath, convertedFile);
+                // we only want to write back to the file if we actually change anything.
+                // that's awkward to do from the regexs themselves as we'll know the number
+                // of matches we get, but we might just replace it with the same thing.
+                // so instead we'll check the result.
+                if (!convertedFile.Equals(fileContents))
+                {
+                    File.WriteAllText(filepath, convertedFile);
+                }
 
                 return true;
             }
