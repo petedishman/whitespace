@@ -17,20 +17,21 @@ namespace Whitespace
             this.configuration = configuration;
         }
 
+        public int FilesExamined { get; private set; }
+        public int FilesUpdated { get; private set; }
+
         public async Task RunAsync()
         {
-            await Task.WhenAll(GetFiles().Select((file) =>
+            var files = GetFiles();
+            FilesExamined = files.Count;
+            FilesUpdated = 0;
+
+            if (configuration.Verbose)
             {
-                // should we have a quiet mode where we don't do this?
-                Console.WriteLine(" {0}", file);
+                Console.WriteLine("Processing {0:n0} file(s)", files.Count);
+            }
 
-                if (configuration.DryRun)
-                {
-                    return Task.CompletedTask;
-                }
-
-                return ConvertFileAsync(file);
-            }));
+            await Task.WhenAll(files.Select((file) => ConvertFileAsync(file)));
         }
 
         // detect all line endings LF or CRLF ready to normalize them
@@ -174,8 +175,14 @@ namespace Whitespace
             return fileContents;
         }
 
+        /// <summary>
+        /// Returns true if the file is changed, false otherwise
+        /// </summary>
+        /// <param name="filepath"></param>
+        /// <returns></returns>
         public async Task<bool> ConvertFileAsync(string filepath)
         {
+            var fileChanged = false;
             try
             {
                 // attempt to get current encoding of file so we can write it back with the same one
@@ -196,22 +203,39 @@ namespace Whitespace
                 // so instead we'll check the result.
                 if (!convertedFile.Equals(fileContents))
                 {
-                    File.WriteAllText(filepath, convertedFile, fileEncoding);
-                }
+                    // only write back to the file if this isn't a dry-run
+                    if (!configuration.DryRun)
+                    {
+                        File.WriteAllText(filepath, convertedFile, fileEncoding);
+                    }
 
-                return true;
+                    fileChanged = true;
+                    FilesUpdated++;
+                }
             }
             catch (Exception ex)
             {
                 Console.Error.WriteLine($"Failed processing {filepath}, err={ex.Message}");
-                return false;
             }
+
+            if (configuration.Verbose)
+            {
+                Console.WriteLine("{0} - {1}", fileChanged ? "Updated" : "Untouched", filepath);
+            }
+            else if (fileChanged)
+            {
+                // not verbose, so only log files that we change (or would change in the case of --dry-run)
+                Console.WriteLine("{0}", filepath);
+            }
+
+            return fileChanged;
         }
 
         public IList<string> GetFiles()
         {
             // might as well just pass in configuration at this point?
             var fileFinder = new Files(configuration);
+
             return fileFinder.Find();
         }
     }

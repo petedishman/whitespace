@@ -25,5 +25,6 @@ namespace Whitespace
         public bool StripTrailingSpaces { get; set; } = DefaultStripTrailingSpaces;
         public LineEnding LineEndingStyle { get; set; } = DefaultLineEndingStyle;
         public bool DryRun { get; set; } = false;
+        public bool Verbose { get; set; } = false;
     }
 }

@@ -1,6 +1,7 @@
 using System;
 using McMaster.Extensions.CommandLineUtils;
 using System.Reflection;
+using System.Diagnostics;
 
 namespace Whitespace
 {
@@ -21,7 +22,8 @@ namespace Whitespace
                 ExcludeFolders = command.Option("--exclude-folders", "exclude folders (default=<none>)", CommandOptionType.MultipleValue),
                 StripTrailingSpaces = command.Option("--strip-trailing-spaces", "strip trailing whitespace from end of lines (default=false)", CommandOptionType.NoValue),
                 LineEndings = command.Option("--line-endings", "convert line endings to crlf|lf (default=leave alone)", CommandOptionType.SingleValue),
-                DryRun = command.Option("--dry-run", "just show files that would be changed but don't do anything", CommandOptionType.NoValue)
+                DryRun = command.Option("--dry-run", "just show files that would be changed but don't do anything", CommandOptionType.NoValue),
+                Verbose = command.Option("--verbose", "Show all files inspected and generally more information", CommandOptionType.NoValue)
             };
 
             return options;
@@ -51,7 +53,16 @@ namespace Whitespace
                 {
                     var configuration = options.GetConfiguration();
                     var converter = new WhitespaceConverter(configuration);
+                    var timer = Stopwatch.StartNew();
+
                     converter.RunAsync().Wait();
+
+                    timer.Stop();
+                    if (configuration.Verbose)
+                    {
+                        Console.WriteLine("\nAll done (took {0:n0} ms)", timer.ElapsedMilliseconds);
+                        Console.WriteLine("Examined {0:n0} files, updated {1:n0}", converter.FilesExamined, converter.FilesUpdated);
+                    }
                     return 0;
                 }
                 catch (ConfigurationException ex)
