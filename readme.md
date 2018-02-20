@@ -8,23 +8,24 @@ It can convert leading whitespace to either tabs or spaces, normalize line endin
 ## Options
 
 ```
-Usage: Whitespace [arguments] [options]
-
-Arguments:
-  path  the file path containing files to process
+Usage: Whitespace [options]
 
 Options:
-  -h|--help                   Show help information
-  --version                   Show version information
-  --indent                    spaces, tabs or leave (default=leave)
-  -t|--tabwidth               number of spaces per tab (default=4)
-  -r|--recurse                recurse through sub-folders when finding files (default=false)
-  -i|--include                file extensions to include, e.g. --include=cpp --include=c,cpp,h,hpp (default=<all>)
-  -e|--exclude                file extensions to exclude (default=<none>)
-  -x|--exclude-folders        exclude folders (default=<none>)
-  -s|--strip-trailing-spaces  strip trailing whitespace from end of lines (default=false)
-  -l|--line-endings           convert line endings to crlf|lf (default=leave alone)
-  -d|--dry-run                just show files that would be changed but don't do anything
+  --help                   Show help information
+  --version                Show version information
+  --path                   file paths to search for files in
+  --file                   a specific file to process
+  --list                   a text file containing the filenames to process
+  --indent                 spaces, tabs or leave (default=leave)
+  --tabwidth               number of spaces per tab (default=4)
+  --recurse                recurse through sub-folders when finding files (default=false)
+  --include                file extensions to include, e.g. --include=cpp --include=c,cpp,h,hpp (default=<all>)
+  --exclude                file extensions to exclude (default=<none>)
+  --exclude-folders        exclude folders (default=<none>)
+  --strip-trailing-spaces  strip trailing whitespace from end of lines (default=false)
+  --line-endings           convert line endings to crlf|lf (default=leave alone)
+  --dry-run                just show files that would be changed but don't do anything
+  --verbose                Show all files inspected and generally more information```
 ```
 
 #### Indentation Style
@@ -50,8 +51,9 @@ Specify `--line-endings=crlf` or `--line-endings=lf` or exclude the option to le
 
 #### What files to process
 
-The first argument to Whitespace should be the path(s) to process. 
-Whitepsace will then look for all files under those paths, including sub-folders if `--recurse` is specified.
+You can specify files to process in 3 different ways.
+
+Path(s) to search through for particular file extensions. Specific folders and extensions can also be excluded.
 
 By default, all files will be processed, but you can control the file extensions processed with `--include` and `--exclude`  
 Multiple extensions can be specified either comma separated or with multiple arguments, i.e. `--include=cpp,c` or `--include=cpp --include=c`
@@ -59,7 +61,39 @@ Multiple extensions can be specified either comma separated or with multiple arg
 Folders under the given path can also be excluded using `--exclude-folders`  
 i.e. `--exclude-folders=node_modules` will exclude any folders under the given path that match `node_modules`
 
+e.g.
+
+```
+--path=project\src --path=project\tests --include=cs,cshtml --exclude-folders=bin --recurse
+```
+
+Specific files to process
+i.e.
+
+```
+--file=file1.cpp --file=file2.cpp --file=main.cpp
+```
+
+By passing in the filename of a file that contains a list of filenames to process, one per line.
+i.e.
+
+```
+--list=filenames.txt
+```
+
+where filenames.txt contains something like:
+
+```
+c:\build\myproject\file1.cpp
+c:\build\myproject\file1.h
+c:\build\myproject2\main.cpp
+```
+
 #### Dry Run
 
-Specifying `--dry-run` will cause whitespace to just list out the files it would attempt to change without actually doing anything.
-It's useful for verifying that your set of paths, and include/exclude extensions are correct.
+Specifying `--dry-run` will cause whitespace to just list out the files it would actually change without actually doing anything.
+
+#### Verbose
+
+Specifying `--verbose` causes whitespace to log out extra information, including all of the files examined.
+It will then state which files were changed and which are left untouched.
