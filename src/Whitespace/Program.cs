@@ -37,7 +37,7 @@ namespace Whitespace
                 FullName = "Whitespace",
                 Description = "Fix whitespace in a bunch of files: change to tabs/spaces, trim trailing whitespace, normalize line endings etc."
             };
-            app.HelpOption("-h|--help");
+            app.HelpOption("--help");
             app.VersionOptionFromAssemblyAttributes(Assembly.GetExecutingAssembly());
             var options = AddConversionOptions(app);
 
