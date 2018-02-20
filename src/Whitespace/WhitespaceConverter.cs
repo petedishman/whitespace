@@ -4,6 +4,7 @@ using System.IO;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Linq;
+using System.Text;
 
 namespace Whitespace
 {
@@ -177,14 +178,14 @@ namespace Whitespace
         {
             try
             {
-                // In .net core this is super simpe
-                // as we have File.ReadAllTextAsync and File.WriteAllTextAsync
-                // in standard .net we need a bit more effort
-
+                // attempt to get current encoding of file so we can write it back with the same one
                 var fileContents = "";
-                using (var reader = File.OpenText(filepath))
+                Encoding fileEncoding;
+                var defaultEncoding = Encoding.ASCII;
+                using (var reader = new StreamReader(filepath, defaultEncoding, detectEncodingFromByteOrderMarks: true))
                 {
                     fileContents = await reader.ReadToEndAsync();
+                    fileEncoding = reader.CurrentEncoding;
                 }
 
                 var convertedFile = ConvertFileText(fileContents);
@@ -195,7 +196,7 @@ namespace Whitespace
                 // so instead we'll check the result.
                 if (!convertedFile.Equals(fileContents))
                 {
-                    File.WriteAllText(filepath, convertedFile);
+                    File.WriteAllText(filepath, convertedFile, fileEncoding);
                 }
 
                 return true;
