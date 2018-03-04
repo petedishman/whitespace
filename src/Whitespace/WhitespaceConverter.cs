@@ -63,52 +63,64 @@ namespace Whitespace
                 fileContents = endOfFileWhitespace.Replace(fileContents, "");
             }
 
-            // neither of these are actually that simple
+            /* Converting to spaces
+             * when it's pure spaces that's obviously easy
+             * when it's pure tabs -> # of spaces = tab count * tab width
+             * When it's mixed tabs and spaces that's obviously more complicated
+             * Assume tab-width=4
+             * .\t (space followed by tab)
+             * ..\t (2 spaces followed by tab)
+             * ...\t
+             * All of these instances would look like just a single tab in an editor
+             * so that's what we need to turn it in to, a single tab worth of spaces (4 in this instance)
+             *
+             * ....\t
+             * should however result in 8 spaces, as an editor would show that as two tabs worth of indent
+             *
+             * This doesn't just occur at the beginning of the line, but any time spaces are between tabs too
+             * i.e.
+             * \t..\t -> ........
+             *
+             * When converting to spaces, dealing with spaces following tabs is pretty simple.
+             * Handling this when converting to tabs is more complicated.
+             * For spaces, assume we have:
+             * \t\t..
+             * This should just be converted to
+             * .......... (10 spaces)
+             *
+             * Converting to tabs
+             * The same rules for converting to spaces actually apply when converting to tabs
+             * We still need to handle mixed spaces and tabs, but the output is just different (tab rather than n spaces)
+             * i.e.
+             * .\t
+             * ..\t
+             * ...\t
+             * would all result in:
+             * \t
+             *
+             * ....\t -> \t\t
+             *
+             * What to do with spaces following tabs at the end of whitespace is more complicated
+             * and may actually need to be configurable
+             * i.e.
+             * \t\t..
+             * That could reasonably be converted to:
+             * - \t\t       (drop the spaces and just have 2 tabs)
+             * - \t\t\t     (treat the spaces as an extra tab, so have 3 tabs)
+             * - \t\t..     (keep the spaces, 2 tabs are for indentation, 2 spaces for alignment)
+             *
+             * That final output would probably need to be configurable as it could be argued
+             * we haven't actually sorted out whitespace and we still have mixed tabs/spaces.
+             * But some people would like it
+             */
 
-            // converting tabs to spaces, tabwidth=4
-            // " \t"    => "    "          1 space + 1 tab => 4 spaces
-            // "  \t"   => "    "          2 space + 1 tab => 4 spaces
-            // "   \t"  => "    "          3 space + 1 tab => 4 spaces
-            // "    \t" => "        "      4 space + 1 tab => 8 spaces
-            // "\t "    => "     "         1 tab + 1 space => 5 spaces
-            // "\t  "   => "      "        1 tab + 2 space => 6 spaces
-            // "\t   "  => "       "       1 tab + 3 space => 7 spaces
-            // "\t    " => "        "      1 tab + 4 space => 8 spaces
-            // " \t "   => "     "
-            // "  \t "  => "     "
-            // "   \t " => "     "
-            // "" => ""
-            // "" => ""
-            // "" => ""
-            // "" => ""
-            // "" => ""
-            //
-            // so spaces should be ignored when grouped with a tab
-            // " \t" will look just like a "\t" in an editor, so it must
-            // be converted to just "    ", i.e one tabs worth of spaces.
-            //
-            // that may be the easiest way of converting as well.
-            // first you clean it up, to tabs only, or tabs at the beginning
-            // then do the conversion
-            //
-            // to clean up mixed tabs/spaces with tabwidth T
-            // loop through
-            //   if
-            //
-            //
-            // if the spaces come before a tab they get ignored
-            //
-            //
-            // 01234567890
-            // ...........
-
-            if (configuration.Indentation == IndentationStyle.Spaces)
+            if (configuration.Indentation != IndentationStyle.Leave)
             {
                 fileContents = leadingWhitespace.Replace(fileContents, match =>
                 {
                     // match.Value is a string of tabs and/or spaces
-                    // we want to remove any redundant spaces then convert
-                    // tabs to spaces, then return that.
+                    // we want to remove any redundant spaces (spaces followed by a tab)
+                    // then normalise the output to whatevers wanted
                     var whitespace = match.Value;
                     int spaceCount = 0;
                     int newSpaceCount = 0;
@@ -130,48 +142,61 @@ namespace Whitespace
                         }
                     }
                     newSpaceCount += spaceCount;
-                    return new string(' ', newSpaceCount);
-                });
-            }
-            else if (configuration.Indentation == IndentationStyle.Tabs)
-            {
-                // is this right
-                // do you want to turn '\t ' to '\t\t'
-                // or should that just be '\t'
-                // rather than rounding up the space count, maybe it should be normal rounding?
-                // so '\t  ' => '\t'
-                // and '\t   ' => '\t\t'
-                // so only turn spaces to tabs if they're at least half of tabWidth?
-                //
-                // definitely need to turn " \t" to just "\t"
-                // even just "  \t" => "\t"
-                // and "   \t" => "\t"
-                // as that's what they'll all appear like in an editor
-                // assuming a tab width of 4
-                //
-                // "\t " => ""
-                fileContents = leadingWhitespace.Replace(fileContents, match =>
-                {
-                    // match.Value contains spaces & tabs
-                    // need to know how many spaces there are and how many tabs.
-                    // then replace initial whitespace with x tabs
-                    int tabCount = 0;
-                    int spaceCount = 0;
-                    foreach (var ch in match.Value)
+
+                    // we now have newSpaceCount set to the number of spaces
+                    // we should have if converting to spaces.
+
+                    // if we're doing spaces just return a string of that length
+                    // if we're doing tabs, convert to a set of tabs and return that.
+                    if (configuration.Indentation == IndentationStyle.Spaces)
                     {
-                        if (ch == ' ')
-                            spaceCount++;
-                        if (ch == '\t')
+                        return new string(' ', newSpaceCount);
+                    }
+                    else
+                    {
+                        // assuming tabwidth=4
+                        // and we want equiv of 10 spaces,
+                        // that's either
+                        // \t\t
+                        // \t\t\t
+                        // \t\t..
+
+                        // at the moment, we're going for \t\t but that may change (or become configurable)
+
+                        // what about less than tab width of spaces at the beginning?
+                        // that would have to go to a tab wouldn't? otherwise you're removing all indentiation?
+
+                        // sod it, lets go for \t\t\t
+
+                        // \t\t
+                        /*
+                        int tabCount = newSpaceCount / configuration.TabWidth;
+                        return new string('\t', tabCount);
+                        */
+
+                        // \t\t\t
+                        int tabCount = newSpaceCount / configuration.TabWidth;
+                        if (newSpaceCount % configuration.TabWidth > 0)
+                        {
                             tabCount++;
+                        }
+                        return new string('\t', tabCount);
+
+                        // \t\t..
+                        /*
+                        int tabCount = newSpaceCount / configuration.TabWidth;
+                        int extraSpaceCount = newSpaceCount % configuration.TabWidth;
+                        var newLeadingWhitespace = new string('\t', tabCount);
+                        if (extraSpaceCount > 0)
+                        {
+                            newLeadingWhitespace += new string(' ', extraSpaceCount);
+                        }
+                        return newLeadingWhitespace;
+                        */
                     }
-                    int replacementTabCount = tabCount;
-                    if (spaceCount > 0)
-                    {
-                        replacementTabCount += (int)Math.Ceiling((double)spaceCount / (double)configuration.TabWidth);
-                    }
-                    return new String('\t', replacementTabCount);
                 });
             }
+
             return fileContents;
         }
 

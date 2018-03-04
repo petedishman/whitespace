@@ -18,7 +18,7 @@ namespace Whitespace.Tests
             };
             var contents = "Testing\t ";
             var expectedContents = "Testing";
-            var result = RunConversionTest(options, contents);
+            var result = RunTest(options, contents);
             Assert.Equal(expectedContents, result);
         }
 
@@ -33,7 +33,7 @@ namespace Whitespace.Tests
             };
             var contents = "Testing\t \nTesting 1,2,3   \n\ntest 1";
             var expectedContents = "Testing\nTesting 1,2,3\n\ntest 1";
-            var result = RunConversionTest(options, contents);
+            var result = RunTest(options, contents);
             Assert.Equal(expectedContents, result);
         }
 
@@ -48,7 +48,7 @@ namespace Whitespace.Tests
             };
             var contents = "testing\n \n\ntesting\n";
             var expected = "testing\n\n\ntesting\n";
-            var result = RunConversionTest(options, contents);
+            var result = RunTest(options, contents);
             Assert.Equal(expected, result);
         }
 
@@ -63,7 +63,7 @@ namespace Whitespace.Tests
             };
             var contents = "testing\r\n \r\n\r\ntesting\r\n";
             var expected = "testing\r\n\r\n\r\ntesting\r\n";
-            var result = RunConversionTest(options, contents);
+            var result = RunTest(options, contents);
             Assert.Equal(expected, result);
         }
 

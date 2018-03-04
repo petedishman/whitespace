@@ -17,7 +17,7 @@ namespace Whitespace.Tests
             };
             var contents = "Testing\nTesting\n";
             var expectedContents = "Testing\r\nTesting\r\n";
-            var result = RunConversionTest(options, contents);
+            var result = RunTest(options, contents);
             Assert.Equal(expectedContents, result);
         }
 
@@ -31,7 +31,7 @@ namespace Whitespace.Tests
             };
             var contents = "Testing\r\nTesting\r\n";
             var expectedContents = "Testing\nTesting\n";
-            var result = RunConversionTest(options, contents);
+            var result = RunTest(options, contents);
             Assert.Equal(expectedContents, result);
         }
 
@@ -45,7 +45,7 @@ namespace Whitespace.Tests
             };
             var contents = "Testing\nTesting\r\n";
             var expectedContents = "Testing\nTesting\r\n";
-            var result = RunConversionTest(options, contents);
+            var result = RunTest(options, contents);
             Assert.Equal(expectedContents, result);
         }
 
@@ -60,7 +60,7 @@ namespace Whitespace.Tests
             };
             var contents = "Testing\nTesting\n";
             var expectedContents = "Testing\r\nTesting\r\n";
-            var result = RunConversionTest(options, contents);
+            var result = RunTest(options, contents);
             Assert.Equal(expectedContents, result);
         }
 
@@ -75,7 +75,7 @@ namespace Whitespace.Tests
             };
             var contents = "Testing\r\nTesting\r\n";
             var expectedContents = "Testing\nTesting\n";
-            var result = RunConversionTest(options, contents);
+            var result = RunTest(options, contents);
             Assert.Equal(expectedContents, result);
         }
 
@@ -90,7 +90,7 @@ namespace Whitespace.Tests
             };
             var contents = "Testing\nTesting\r\n";
             var expectedContents = "Testing\nTesting\r\n";
-            var result = RunConversionTest(options, contents);
+            var result = RunTest(options, contents);
             Assert.Equal(expectedContents, result);
         }
 
